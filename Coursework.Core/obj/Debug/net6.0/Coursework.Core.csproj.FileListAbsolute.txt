@@ -1,0 +1,23 @@
+C:\Projects\AsyncAwaitTest\Coursework\Coursework.Core\bin\Debug\net6.0\Coursework.Core.deps.json
+C:\Projects\AsyncAwaitTest\Coursework\Coursework.Core\bin\Debug\net6.0\Coursework.Core.dll
+C:\Projects\AsyncAwaitTest\Coursework\Coursework.Core\bin\Debug\net6.0\Coursework.Core.pdb
+C:\Projects\AsyncAwaitTest\Coursework\Coursework.Core\obj\Debug\net6.0\Coursework.Core.csproj.AssemblyReference.cache
+C:\Projects\AsyncAwaitTest\Coursework\Coursework.Core\obj\Debug\net6.0\Coursework.Core.GeneratedMSBuildEditorConfig.editorconfig
+C:\Projects\AsyncAwaitTest\Coursework\Coursework.Core\obj\Debug\net6.0\Coursework.Core.AssemblyInfoInputs.cache
+C:\Projects\AsyncAwaitTest\Coursework\Coursework.Core\obj\Debug\net6.0\Coursework.Core.AssemblyInfo.cs
+C:\Projects\AsyncAwaitTest\Coursework\Coursework.Core\obj\Debug\net6.0\Coursework.Core.csproj.CoreCompileInputs.cache
+C:\Projects\AsyncAwaitTest\Coursework\Coursework.Core\obj\Debug\net6.0\Coursework.Core.dll
+C:\Projects\AsyncAwaitTest\Coursework\Coursework.Core\obj\Debug\net6.0\refint\Coursework.Core.dll
+C:\Projects\AsyncAwaitTest\Coursework\Coursework.Core\obj\Debug\net6.0\Coursework.Core.pdb
+C:\Projects\AsyncAwaitTest\Coursework\Coursework.Core\obj\Debug\net6.0\ref\Coursework.Core.dll
+C:\Users\Alexander\Documents\Study\6 semestr\Coursework\Coursework.Core\bin\Debug\net6.0\Coursework.Core.deps.json
+C:\Users\Alexander\Documents\Study\6 semestr\Coursework\Coursework.Core\bin\Debug\net6.0\Coursework.Core.dll
+C:\Users\Alexander\Documents\Study\6 semestr\Coursework\Coursework.Core\bin\Debug\net6.0\Coursework.Core.pdb
+C:\Users\Alexander\Documents\Study\6 semestr\Coursework\Coursework.Core\obj\Debug\net6.0\Coursework.Core.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Alexander\Documents\Study\6 semestr\Coursework\Coursework.Core\obj\Debug\net6.0\Coursework.Core.AssemblyInfoInputs.cache
+C:\Users\Alexander\Documents\Study\6 semestr\Coursework\Coursework.Core\obj\Debug\net6.0\Coursework.Core.AssemblyInfo.cs
+C:\Users\Alexander\Documents\Study\6 semestr\Coursework\Coursework.Core\obj\Debug\net6.0\Coursework.Core.csproj.CoreCompileInputs.cache
+C:\Users\Alexander\Documents\Study\6 semestr\Coursework\Coursework.Core\obj\Debug\net6.0\Coursework.Core.dll
+C:\Users\Alexander\Documents\Study\6 semestr\Coursework\Coursework.Core\obj\Debug\net6.0\refint\Coursework.Core.dll
+C:\Users\Alexander\Documents\Study\6 semestr\Coursework\Coursework.Core\obj\Debug\net6.0\Coursework.Core.pdb
+C:\Users\Alexander\Documents\Study\6 semestr\Coursework\Coursework.Core\obj\Debug\net6.0\ref\Coursework.Core.dll

@@ -1,0 +1,38 @@
+Вхід:
+    - weights: список ваг об'єктів
+    - chunkGap: розмір кроку (за замовчуванням 3)
+
+    Вихід:
+    - Indexes: список індексів обраних речей
+    - Sum: Значення цільової функції
+
+Ініціалізація:
+   resultIndexes: порожній список в який буде записуватися індекси предметів які було обрано
+   sum: Значення цільової функції для resultIndexes
+   maxPartitionValue: Максимальна оцінка елементу в поточній підмножині
+   lastSelectedIndex: Індекс елемента в поточній підмножині з maxPartitionValue
+   currentChunkPosition: Позиція в поточній підмножині
+   lastAddedIndex: останній доданий індекс у resultIndexes
+
+for i від 0 до довжини weights - 1:
+    Збільшити currentChunkPosition на 1
+
+    Отримати currentValue за допомогою оцінки ваги поточного елемента та сусідів 
+        
+    if maxPartitionValue є null або currentValue більше maxPartitionValue:
+        maxPartitionValue = currentValue
+        lastSelectedIndex = i
+    endif
+
+    // Кінець підмножини або кінець масиву weights
+    if currentChunkPosition дорівнює chunkGap або i дорівнює довжині weights - 1:
+        Додати lastSelectedIndex до resultIndexes
+        Додати weights[lastSelectedIndex] до sum
+        maxPartitionValue = null
+        i = lastSelectedIndex + chunkGap - 1
+        lastAddedIndex = lastSelectedIndex
+        currentChunkPosition = 0
+    endif
+endfor
+
+return (resultIndexes, sum)
