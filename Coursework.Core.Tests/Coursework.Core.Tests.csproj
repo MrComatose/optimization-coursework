@@ -23,6 +23,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Coursework.Core\Coursework.Core.csproj" />
+      <ProjectReference Include="..\Coursework.TaskGenerator\Coursework.TaskGenerator.csproj" />
     </ItemGroup>
 
 </Project>

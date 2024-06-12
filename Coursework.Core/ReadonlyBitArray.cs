@@ -28,5 +28,5 @@ public class ReadOnlyBitArray : IReadOnlyList<bool>
         return GetEnumerator();
     }
 
-    public BitArray CloneBits() => new BitArray(_bitArray);
+    public BitArray CloneBits() => new (_bitArray);
 }

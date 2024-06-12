@@ -15,155 +15,91 @@ public abstract class MaxWeightSelectorTests
 
     public class GreedyTests : MaxWeightSelectorTests
     {
-        public GreedyTests(): base(new GreedyWeightsSelector(new NeighborsValueProvider()))
+        public GreedyTests() : base(new GreedyWeightsSelector(new NeighborsValueProvider()))
         {
-            
-        }
-    }
-    public class GeneticTests : MaxWeightSelectorTests
-    {
-        public GeneticTests(): base(new GeneticWeightSelector())
-        {
-            
         }
     }
 
-    [Fact]
-    public  async Task Test1()
+    public class GeneticTests : MaxWeightSelectorTests
     {
-        // Arrange
-        var numbers = new[] { 1, 2, 3, 0, 33, 43, 2, 23, 2 };
-        
-        // Act
-        var result = await _selector.SelectMax(numbers);
-        
-        // Assert
-        Assert.Equal(58, result.Sum);
-        
+        public GeneticTests() : base(new GeneticWeightSelector())
+        {
+        }
     }
-    
-    
-    [Fact]
-    public  async Task SuccessRateCheck()
+
+    public static IEnumerable<object[]> GeneratedTestData()
+    {
+        yield return new object[] { TaskGenerator.Generator.GenerateWeights(100, 0.1d, 88d, 100) };
+        yield return new object[] { TaskGenerator.Generator.GenerateWeights(10, 2d, 88d, 100) };
+        yield return new object[] { TaskGenerator.Generator.GenerateWeights(3, 100, 1000, 0) };
+        yield return new object[] { TaskGenerator.Generator.GenerateWeights(100, 100, 900, 100) };
+        yield return new object[] { TaskGenerator.Generator.GenerateWeights(100, 100, 900, 100) };
+        yield return new object[] { TaskGenerator.Generator.GenerateWeights(100, 100, 900, 100) };
+        yield return new object[] { TaskGenerator.Generator.GenerateWeights(100, 100, 900, 100) };
+        yield return new object[] { TaskGenerator.Generator.GenerateWeights(100, 100, 900, 100) };
+        yield return new object[] { TaskGenerator.Generator.GenerateWeights(100, 100, 900, 100) };
+        yield return new object[] { TaskGenerator.Generator.GenerateWeights(100, 100, 900, 100) };
+    }
+
+    [Theory]
+    [MemberData(nameof(GeneratedTestData))]
+    public async Task ShouldAlwaysReturnValidIndexes(IEnumerable<int> weights)
     {
         // Arrange
-        var numbers = new[] { 1, 2, 3, 0, 33, 43, 2, 23, 2 };
-        var count = 1000;
-        var results = new ConcurrentBag<decimal>();
+        var chunkGap = 3;
+
+        // Act
+        var result = await _selector.SelectMax(weights, chunkGap);
+
+        // Assert
+        var indexes = result.Indexes.ToArray();
+        for (int i = 0; i < indexes.Length; i++)
+        {
+            for (int j = i + 1; j < indexes.Length; j++)
+            {
+                var diff = Math.Abs(indexes[i] - indexes[j]);
+
+                Assert.True(diff >= chunkGap, "");
+            }
+        }
+    }
+
+    public static IEnumerable<object[]> StaticTestData()
+    {
+        yield return new object[] { new int[] { 1, 2, 3, 0, 33, 43, 2, 23, 2 }, 58d };
+        yield return new object[] { new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0 }, 1d };
+        yield return new object[] { new int[] { 1, 91, 92, 93, 4 }, 95d };
+        yield return new object[] { new int[] { 1, 8, 9, 16, 25, 2, 32, 1 }, 49d };
+        yield return new object[]
+        {
+            new int[] { 1, 10, 100, 1000, 10000, 100000, 1000000, 10000000 },
+            10000000d + 10000d + 10d
+        };
+        yield return new object[] { new int[] { 0, 0, 92, 93, 94 }, 94d };
+    }
+
+    [Theory]
+    [MemberData(nameof(StaticTestData))]
+    public async Task SuccessRateCheck(int[] weights, decimal expectedSum)
+    {
+        // Arrange
+        var count = 100;
+        var results = new ConcurrentBag<(IEnumerable<int> Indexes, decimal Sum)>();
+
         // Act
         await Parallel.ForEachAsync(Enumerable.Range(0, count), async (_, _) =>
         {
-            var result = await _selector.SelectMax(numbers);
+            var result = await _selector.SelectMax(weights);
 
-            results.Add(result.Sum);
+            results.Add(result);
         });
-        
+
         // Assert
-        var successRate = results.Count(x => x == 58);
+        var successRate = results.Count(x =>
+            x.Sum == expectedSum
+        );
         Assert.Equal(1, successRate / (double)count);
-        
     }
-    
-    
-    [Fact]
-    public  async Task ShouldSelectSingleValuableItem()
-    {
-        // Arrange
-        var numbers = new[] { 0,0,0,0,0,0,0,0,0,0,0,00,0,0,0,0,0, 1 ,0,0,0,0,0,0,0,0,0,0,0,00,0,0,0,0,0 };
-        
-        // Act
-        var result = await _selector.SelectMax(numbers);
-        
-        // Assert
-        Assert.Equal(1, result.Sum);
-        
-    }
-    
-    [Fact]
-    public  async Task ShouldSelectElementsBasedOnNextChunk()
-    {
-        // Arrange
-        var numbers = new[] { 1, 91, 92, 93, 4 };
-        
-        // Act
-        var result = await _selector.SelectMax(numbers);
-        
-        // Assert
-        Assert.Equal(95, result.Sum);
-        
-    }
-    
-    
-    [Fact]
-    public  async Task Test2()
-    {
-        // Arrange
-        var numbers = new[] { 1, 8, 9, 16, 25, 2, 32, 1 };
-        
-        // Act
-        var result = await _selector.SelectMax(numbers);
-        
-        // Assert
-        Assert.Equal(49, result.Sum);
-        
-    }
-    
-    
-    [Fact]
-    public  async Task Test4()
-    {
-        // Arrange
-        var numbers = new[] { 1, 10, 100, 1000, 10000, 100000, 1000000, 10000000 };
-        
-        // Act
-        var result = await _selector.SelectMax(numbers);
-        
-        // Assert
-        Assert.Equal(10000000 + 10000 + 10, result.Sum);
-        
-    }
-    
-    
-    [Fact]
-    public  async Task Test3()
-    {
-        // Arrange
-        var numbers = new[] { 0, 0, 92, 93, 94 };
-        
-        // Act
-        var result = await _selector.SelectMax(numbers);
-        
-        // Assert
-        Assert.Equal(94, result.Sum);
-        
-    }
-    
-    [Fact]
-    public  async Task StressTest1()
-    {
-        // Arrange
-        var numbers = Enumerable.Range(0, 1000000);
-        
-        // Act
-        var node = await _selector.SelectMax(numbers);
-        
-        // Assert
-        Assert.Equal(166666833333, node.Sum);
-        
-    }
-    
-    [Fact]
-    public async Task StressTest2()
-    {
-        // Arrange
-        var numbers = Enumerable.Range(0, 10000);
-        
-        // Act
-        var node = await _selector.SelectMax(numbers);
-        
-        // Assert
-        Assert.Equal(16668333, node.Sum);
-        
-    }
-    
+
+
 }
