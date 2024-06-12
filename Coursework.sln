@@ -6,6 +6,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Coursework.Core.Tests", "Co
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Coursework.Benchmark", "Coursework.Benchmark\Coursework.Benchmark.csproj", "{D3DBB793-4D30-4D80-B0CB-8DAC7F7DE6C6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Coursework.TaskGenerator", "Coursework.TaskGenerator\Coursework.TaskGenerator.csproj", "{1D5ED692-FF46-40DE-86F8-A5287A9D817F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{D3DBB793-4D30-4D80-B0CB-8DAC7F7DE6C6}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D3DBB793-4D30-4D80-B0CB-8DAC7F7DE6C6}.Debug|Any CPU.ActiveCfg = Release|Any CPU
 		{D3DBB793-4D30-4D80-B0CB-8DAC7F7DE6C6}.Debug|Any CPU.Build.0 = Release|Any CPU
+		{1D5ED692-FF46-40DE-86F8-A5287A9D817F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1D5ED692-FF46-40DE-86F8-A5287A9D817F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1D5ED692-FF46-40DE-86F8-A5287A9D817F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1D5ED692-FF46-40DE-86F8-A5287A9D817F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
