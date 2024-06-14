@@ -1,4 +1,5 @@
 ﻿using System.Collections.Concurrent;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Coursework.Core;
 
@@ -13,6 +14,7 @@ public class GeneticWeightSelector : IMaxWeightSelector
         _options = options;
     }
 
+    [SuppressMessage("ReSharper.DPA", "DPA0001: Memory allocation issues")]
     public async Task<(IEnumerable<int> Indexes, decimal Sum)> SelectMax(IEnumerable<int> weights, int chunkGap = 3)
     {
         var weightsArray = weights.ToArray();

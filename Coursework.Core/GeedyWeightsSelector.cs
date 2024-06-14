@@ -1,4 +1,6 @@
-﻿namespace Coursework.Core;
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace Coursework.Core;
 
 public class GreedyWeightsSelector : IMaxWeightSelector
 {
@@ -16,7 +18,7 @@ public class GreedyWeightsSelector : IMaxWeightSelector
     {
         var weightArr = weights.ToArray();
 
-        var resultIndexes = new List<int>();
+        var resultIndexes = new List<int>(weightArr.Length / chunkGap + 1);
         var sum = 0m;
 
         double? maxPartitionValue = null;

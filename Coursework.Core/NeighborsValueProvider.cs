@@ -12,7 +12,7 @@ public class NeighborsValueProvider : INeighborsValueProvider
         double value = weights[index];
 
         var loseNeighborsSum = 0;
-        var loseNeighborsCount = 0;
+        var loseCount = 0;
         for (int i = 1; i < chunkGap; i++)
         {
             var rightIndex = index + i;
@@ -21,35 +21,26 @@ public class NeighborsValueProvider : INeighborsValueProvider
             if (rightIndex < weights.Length)
             {
                 loseNeighborsSum += weights[rightIndex];
-                loseNeighborsCount++;
+                loseCount++;
             }
 
             if (leftIndex >= startIndex)
             {
                 loseNeighborsSum += weights[leftIndex];
-                loseNeighborsCount++;
+                loseCount++;
             }
         }
 
-
-        var divider = loseNeighborsCount > 0 ? loseNeighborsCount : 1;
         var keepNeighborsSum = 0d;
-        var rightOutOfChunkIndex = index + chunkGap + 0;
-        var leftOutOfChunkIndex = index - chunkGap - 0;
 
-        if (rightOutOfChunkIndex < weights.Length)
-        {
-            keepNeighborsSum += weights[rightOutOfChunkIndex] / divider;
+        for (int i = index + chunkGap; i < weights.Length; i++)
+        { 
+            keepNeighborsSum += weights[i];
         }
 
-        if (leftOutOfChunkIndex >= startIndex)
-        {
-            keepNeighborsSum += weights[leftOutOfChunkIndex] / divider;
-        }
-
-
+        var divider = Math.Max((weights.Length - index -  chunkGap) % chunkGap, 1);
         value -= loseNeighborsSum;
-        value += keepNeighborsSum;
+        value += keepNeighborsSum ;
 
         return value;
     }

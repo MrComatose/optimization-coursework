@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Concurrent;
-using System.Collections.Specialized;
+﻿using System.Collections.Concurrent;
 
 namespace Coursework.Core.Tests;
 
@@ -100,6 +98,4 @@ public abstract class MaxWeightSelectorTests
         );
         Assert.Equal(1, successRate / (double)count);
     }
-
-
 }
