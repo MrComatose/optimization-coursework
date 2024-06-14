@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import { Input, Message, Container, Grid, Header, ItemImage } from 'semantic-ui-react';
+import { Input, Message, Container, Grid, Header, Statistic } from 'semantic-ui-react';
 import axios from 'axios';
 import config from '../config'
 import {
@@ -9,6 +9,7 @@ import {
     Placeholder,
     Loader
 } from 'semantic-ui-react'
+import { ticksToMilliseconds } from '../helpers'
 
 const PlaceholderLoading = () => (
     <Placeholder>
@@ -25,6 +26,12 @@ const PlaceholderLoading = () => (
     </Placeholder>
 )
 
+const emptyResult = {
+    selectedIndexes: [],
+    sum: 0,
+    elapsedTicks: 0,
+    elapsedMilliseconds: 0
+};
 const fetchData = async (values, options, signal) => {
     try {
         const response = await axios.post(`${config.serverUrl}/genetic`, {
@@ -40,18 +47,14 @@ const fetchData = async (values, options, signal) => {
         return response.data;
     } catch (error) {
         console.error('Error fetching data:', error);
-        return {
-            selectedIndexes: [],
-            sum: 0
-        };
+        return emptyResult;
     }
 };
 
+
+
 const Genetic = ({ weights }) => {
-    const [result, setResult] = useState({
-        selectedIndexes: [],
-        sum: 0
-    });
+    const [result, setResult] = useState(emptyResult);
     const [options, setOptions] = useState({
         populationSize: 10,
         evaluationCount: 3,
@@ -64,6 +67,7 @@ const Genetic = ({ weights }) => {
         const signal = abortController.signal;
         const fetchDataAndUpdateResult = async () => {
             setBusy(true)
+            setResult(emptyResult);
             const resultData = await fetchData(weights, options, signal);
             setResult(resultData);
             setBusy(false)
@@ -120,8 +124,9 @@ const Genetic = ({ weights }) => {
             </Grid>
             <Message positive>
                 <Message.Header>{busy && "Loading "}Result</Message.Header>
-                <p>Selected Indexes: {busy ? "Loading..." : result.selectedIndexes.join(', ')}</p>
-                <p>Sum: {busy ? "loading..." : result.sum}</p>
+                <p>Selected Indexes: {result.selectedIndexes.join(', ')}</p>
+                <Statistic label='Milliseconds' value={result.elapsedMilliseconds} />
+                <Statistic label='Sum' value={result.sum} />
             </Message>
         </Container>
     );

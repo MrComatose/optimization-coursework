@@ -7,10 +7,8 @@ public interface INeighborsValueProvider
 
 public class NeighborsValueProvider : INeighborsValueProvider
 {
-    public double GetValue(int[] weights, int index, int chunkGap, int startIndex = 0)
+    private double GetNeighborsWeight(int[] weights, int index, int chunkGap, int startIndex = 0)
     {
-        double value = weights[index];
-
         var loseNeighborsSum = 0;
         for (int i = 1; i < chunkGap; i++)
         {
@@ -27,9 +25,14 @@ public class NeighborsValueProvider : INeighborsValueProvider
                 loseNeighborsSum += weights[leftIndex];
             }
         }
-        
-        value -= loseNeighborsSum ;
 
-        return value;
+        return loseNeighborsSum;
+    }
+
+    public double GetValue(int[] weights, int index, int chunkGap, int startIndex = 0)
+    {
+        var loseNeighborsSum = GetNeighborsWeight(weights, index, chunkGap, startIndex);
+        
+        return weights[index] - loseNeighborsSum ;
     }
 }

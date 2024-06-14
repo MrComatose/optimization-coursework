@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import { Input, TextArea, Container, Grid, Header } from 'semantic-ui-react';
+import { Input, TextArea, Container, Grid, Header, Form} from 'semantic-ui-react';
 import axios from 'axios';
 import config from '../config'
 
@@ -16,7 +16,7 @@ const fetchData = async (values, signal) => {
     }
 };
 
-const Generator = ({onChange}) => {
+const Generator = ({ onChange }) => {
     const [values, setValues] = useState({
         n: 1000,
         maxDiff: 120,
@@ -59,12 +59,12 @@ const Generator = ({onChange}) => {
     }, [result]);
 
     useEffect(() => {
-        if(invalid || !onChange) {
+        if (invalid || !onChange) {
             return;
         }
 
         onChange(result);
-    } , [result, invalid]);
+    }, [result, invalid]);
 
     const handleInputChange = useCallback((e, { name, value }) => {
         setValues(prevValues => ({
@@ -118,15 +118,17 @@ const Generator = ({onChange}) => {
                         /></div>
                 </Grid.Row>
             </Grid>
-            <TextArea
-                placeholder="Result"
-                value={textareaValue}
-                onChange={handleTextareaChange}
-                style={{ minHeight: 300, marginTop: '20px', width: '100%', fontSize: '1.2em' }}
 
-                
-            />
-            {invalid && "Invalid Input"}
+            <Form error={invalid}>
+                <TextArea
+                    placeholder="Result"
+                    value={textareaValue}
+                    onChange={handleTextareaChange}
+                    style={{ minHeight: 300, marginTop: '20px', width: '100%', fontSize: '1.2em', borderColor: invalid ? "red": null }}
+
+
+                />
+            </Form>
         </Container>
     );
 };

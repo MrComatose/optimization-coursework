@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Coursework.Core;
 
 namespace Coursework.WebApi;
@@ -11,7 +12,8 @@ public class GeneticRequest
     public double? MutationProbability { get; set; }
 }
 
-public record GeneticWeightSelectorResult(IEnumerable<int> SelectedIndexes, decimal Sum);
+public record GeneticWeightSelectorResult(IEnumerable<int> SelectedIndexes, decimal Sum, long ElapsedTicks, long ElapsedMilliseconds);
+
 
 public static class GeneticHandlers
 {
@@ -27,8 +29,16 @@ public static class GeneticHandlers
     {
         var selector = new GeneticWeightSelector(new GeneticWeightSelector.Options(request.PopulationSize,
             request.EvaluationCount, request.MutationProbability));
+        
+        var stopwatch = new Stopwatch();
+        stopwatch.Start();
+
         var res = await selector.SelectMax(request.Weights, request.ChunkGap);
 
-        return new GeneticWeightSelectorResult(res.Indexes, res.Sum);
+        stopwatch.Stop();
+
+        return new GeneticWeightSelectorResult(res.Indexes, res.Sum, 
+            stopwatch.ElapsedTicks, stopwatch.ElapsedMilliseconds);
     }
+
 }
