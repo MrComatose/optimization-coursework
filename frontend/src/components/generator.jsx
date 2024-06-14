@@ -78,7 +78,7 @@ const Generator = ({onChange}) => {
     }, []);
 
     return (
-        <Container text>
+        <Container>
             <Header>
                 Generator
             </Header>

@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using Coursework.Core;
 using Coursework.TaskGenerator;
 using Coursework.WebApi;
 
@@ -16,7 +17,7 @@ var generateApi = app.MapGroup("/generate");
 
 generateApi.MapGet("/", Generator.GenerateWeights);
 
-app.UseGreedyEndpoints();
+app.UseGreedyEndpoints().UseGeneticEndpoints();
 app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
 app.Run();
@@ -25,6 +26,8 @@ app.Run();
 [JsonSerializable(typeof(IEnumerable<int>))]
 [JsonSerializable(typeof(GreedyRequest))]
 [JsonSerializable(typeof(GreedyWeightSelectorResult))]
+[JsonSerializable(typeof(GeneticRequest))]
+[JsonSerializable(typeof(GeneticWeightSelectorResult))]
 internal partial class AppJsonSerializerContext : JsonSerializerContext
 {
 }

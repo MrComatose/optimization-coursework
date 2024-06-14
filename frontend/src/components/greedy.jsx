@@ -47,7 +47,7 @@ const Greedy = ({weights}) => {
     }, [weights]);
 
     return (
-        <Container text>
+        <Container>
             <Header>
                 Greedy
             </Header>
