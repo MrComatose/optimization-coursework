@@ -18,6 +18,13 @@ public abstract class MaxWeightSelectorTests
         }
     }
 
+    public class ComplexGreedyTests : MaxWeightSelectorTests
+    {
+        public ComplexGreedyTests() : base(new GreedyWeightsSelector(new ComplexValueProvider()))
+        {
+        }
+    }
+
     public class GeneticTests : MaxWeightSelectorTests
     {
         public GeneticTests() : base(new GeneticWeightSelector())

@@ -1,3 +1,1 @@
-export default {
-    serverUrl: 'http://localhost:5245'
-}
+export default window.env;

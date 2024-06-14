@@ -1,136 +1,122 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import { Input, TextArea, Container, Grid, Header, Form} from 'semantic-ui-react';
-import axios from 'axios';
-import config from '../config'
+import axios from "axios";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { Container, Form, Grid, Header, Input, TextArea } from "semantic-ui-react";
+import config from "../config";
 
 const fetchData = async (values, signal) => {
-    try {
-        const response = await axios.get(`${config.serverUrl}/generate`, {
-            params: values,
-            signal
-        });
-        return response.data;
-    } catch (error) {
-        console.error('Error fetching data:', error);
-        return [];
-    }
+  try {
+    const response = await axios.get(`${config.serverUrl}/generate`, {
+      params: values,
+      signal,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    return [];
+  }
 };
 
 const Generator = ({ onChange }) => {
-    const [values, setValues] = useState({
-        n: 1000,
-        maxDiff: 120,
-        averageValue: 66,
-        permutationCount: 1200
-    });
-    const [result, setResult] = useState([]);
-    const [textareaValue, setTextareaValue] = useState('');
+  const [values, setValues] = useState({
+    n: 1000,
+    maxDiff: 120,
+    averageValue: 66,
+    permutationCount: 1200,
+  });
+  const [result, setResult] = useState([]);
+  const [textareaValue, setTextareaValue] = useState("");
 
-    useEffect(() => {
-        const abortController = new AbortController();
-        const signal = abortController.signal;
-        const fetchDataAndUpdateResult = async () => {
+  useEffect(() => {
+    const abortController = new AbortController();
+    const signal = abortController.signal;
+    const fetchDataAndUpdateResult = async () => {
+      const resultData = await fetchData(values, signal);
+      setResult(resultData);
+      setTextareaValue(resultData.join(", "));
+    };
 
-            const resultData = await fetchData(values, signal);
-            setResult(resultData);
-            setTextareaValue(resultData.join(', '));
-        };
+    fetchDataAndUpdateResult();
 
-        fetchDataAndUpdateResult();
+    return () => {
+      abortController.abort();
+    };
+  }, [values]);
 
-        return () => {
-            abortController.abort();
-        }
-    }, [values]);
+  useEffect(() => {
+    if (!textareaValue) {
+      return;
+    }
 
+    const numbers = textareaValue.split(",").map((x) => +x);
 
-    useEffect(() => {
-        if (!textareaValue) {
-            return;
-        }
+    setResult(numbers);
+  }, [textareaValue]);
 
-        const numbers = textareaValue.split(',').map(x => +x);
+  const invalid = useMemo(() => {
+    return result.includes(NaN);
+  }, [result]);
 
-        setResult(numbers);
-    }, [textareaValue]);
+  useEffect(() => {
+    if (invalid || !onChange) {
+      return;
+    }
 
-    const invalid = useMemo(() => {
-        return result.includes(NaN);
-    }, [result]);
+    onChange(result);
+  }, [result, invalid, onChange]);
 
-    useEffect(() => {
-        if (invalid || !onChange) {
-            return;
-        }
+  const handleInputChange = useCallback((e, { name, value }) => {
+    setValues((prevValues) => ({
+      ...prevValues,
+      [name]: value,
+    }));
+  }, []);
 
-        onChange(result);
-    }, [result, invalid]);
+  const handleTextareaChange = useCallback((e) => {
+    setTextareaValue(e.target.value);
+  }, []);
 
-    const handleInputChange = useCallback((e, { name, value }) => {
-        setValues(prevValues => ({
-            ...prevValues,
-            [name]: value
-        }));
-    }, []);
+  return (
+    <Container>
+      <Header>Генерація індивідуальних зачдач</Header>
+      <Grid columns={1} stackable>
+        <Grid.Row>
+          <div>
+            <Input label="n =" name="n" value={values.n} onChange={handleInputChange} style={{ margin: "10px" }} />
+          </div>
+          <div>
+            <Input label="maxDiff =" name="maxDiff" value={values.maxDiff} onChange={handleInputChange} style={{ margin: "10px" }} />
+          </div>
+          <div>
+            <Input
+              label="averageValue ="
+              name="averageValue"
+              value={values.averageValue}
+              onChange={handleInputChange}
+              style={{ margin: "10px" }}
+            />
+          </div>
+          <div>
+            <Input
+              label="permutationCount ="
+              name="permutationCount"
+              value={values.permutationCount}
+              onChange={handleInputChange}
+              style={{ margin: "10px" }}
+            />
+          </div>
+        </Grid.Row>
+      </Grid>
 
-    const handleTextareaChange = useCallback((e) => {
-        setTextareaValue(e.target.value);
-    }, []);
-
-    return (
-        <Container>
-            <Header>
-                Generator
-            </Header>
-            <Grid columns={1} stackable>
-                <Grid.Row>
-                    <div>
-                        <Input
-                            label="n ="
-                            name="n"
-                            value={values.n}
-                            onChange={handleInputChange}
-                            style={{ margin: '10px' }}
-                        /></div>
-                    <div>
-                        <Input
-                            label="maxDiff ="
-                            name="maxDiff"
-                            value={values.maxDiff}
-                            onChange={handleInputChange}
-                            style={{ margin: '10px' }}
-                        /></div>
-                    <div>
-                        <Input
-                            label="averageValue ="
-                            name="averageValue"
-                            value={values.averageValue}
-                            onChange={handleInputChange}
-                            style={{ margin: '10px' }}
-                        /></div>
-                    <div>
-                        <Input
-                            label="permutationCount ="
-                            name="permutationCount"
-                            value={values.permutationCount}
-                            onChange={handleInputChange}
-                            style={{ margin: '10px' }}
-                        /></div>
-                </Grid.Row>
-            </Grid>
-
-            <Form error={invalid}>
-                <TextArea
-                    placeholder="Result"
-                    value={textareaValue}
-                    onChange={handleTextareaChange}
-                    style={{ minHeight: 300, marginTop: '20px', width: '100%', fontSize: '1.2em', borderColor: invalid ? "red": null }}
-
-
-                />
-            </Form>
-        </Container>
-    );
+      <Form error={invalid}>
+        <TextArea
+          placeholder="Result"
+          value={textareaValue}
+          onChange={handleTextareaChange}
+          style={{ minHeight: 300, marginTop: "20px", width: "100%", fontSize: "1.2em", borderColor: invalid ? "red" : null }}
+        />
+      </Form>
+    </Container>
+  );
 };
 
 export default Generator;

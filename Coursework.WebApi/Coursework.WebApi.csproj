@@ -13,4 +13,10 @@
       <ProjectReference Include="..\Coursework.TaskGenerator\Coursework.TaskGenerator.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Update="static\NewFile1.txt">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
 </Project>

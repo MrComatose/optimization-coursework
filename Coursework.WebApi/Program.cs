@@ -2,6 +2,7 @@ using System.Text.Json.Serialization;
 using Coursework.Core;
 using Coursework.TaskGenerator;
 using Coursework.WebApi;
+using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateSlimBuilder(args);
 
@@ -14,6 +15,12 @@ builder.Services.AddCors();
 var app = builder.Build();
 
 var generateApi = app.MapGroup("/generate");
+
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(
+        Path.Combine(builder.Environment.ContentRootPath, "static")),
+});
 
 generateApi.MapGet("/", Generator.GenerateWeights);
 

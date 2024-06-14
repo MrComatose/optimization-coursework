@@ -1,32 +1,44 @@
-import './App.css';
-import Generator from './components/generator';
-import { Divider, Tab, TabPane } from 'semantic-ui-react';
-import Greedy from './components/greedy';
-import { useState } from 'react';
-import Genetic from './components/genetic';
+import { useState } from "react";
+import { Divider, Tab } from "semantic-ui-react";
+import "./App.css";
+import Generator from "./components/generator";
+import { Genetic, GeneticParamsAnalyzer } from "./components/genetic";
+import Greedy from "./components/greedy";
 
 const SandBox = () => {
-
   const [weights, setWeights] = useState([]);
-  return <>
-    <br />
-    <Generator onChange={setWeights} />
-    <Divider horizontal />
-    <Greedy weights={weights} />
-    <Divider horizontal />
-    <Genetic weights={weights} />
-  </>
-}
+  return (
+    <>
+      <br />
+      <Generator onChange={setWeights} />
+      <Divider horizontal />
+      <Greedy weights={weights} />
+      <Divider horizontal />
+      <Genetic weights={weights} />
+    </>
+  );
+};
+
+const GeneticParamsDashboard = () => {
+  const [weights, setWeights] = useState([]);
+  return (
+    <>
+      <br />
+      <Generator onChange={setWeights} />
+      <Divider horizontal />
+      <GeneticParamsAnalyzer weights={weights} />
+    </>
+  );
+};
 
 const panes = [
-  { menuItem: 'Sandbox', render: () => <SandBox /> },
-  { menuItem: 'Tab 2', render: () => <TabPane>Tab 2 Content</TabPane> },
-  { menuItem: 'Tab 3', render: () => <TabPane>Tab 3 Content</TabPane> },
-]
+  { menuItem: "Пісочниця", render: () => <SandBox /> },
+  { menuItem: "Аналіз параметрів генетичного алгоритму", render: () => <GeneticParamsDashboard /> },
+];
 
 function App() {
   return (
-    <div className="App">
+    <div className="App inverted">
       <Tab panes={panes} />
     </div>
   );
