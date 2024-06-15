@@ -1,20 +1,6 @@
-import axios from "axios";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Container, Form, Grid, Header, Input, TextArea } from "semantic-ui-react";
-import config from "../config";
-
-const fetchData = async (values, signal) => {
-  try {
-    const response = await axios.get(`${config.serverUrl}/generate`, {
-      params: values,
-      signal,
-    });
-    return response.data;
-  } catch (error) {
-    console.error("Error fetching data:", error);
-    return [];
-  }
-};
+import api from "../api";
 
 const Generator = ({ onChange }) => {
   const [values, setValues] = useState({
@@ -30,7 +16,7 @@ const Generator = ({ onChange }) => {
     const abortController = new AbortController();
     const signal = abortController.signal;
     const fetchDataAndUpdateResult = async () => {
-      const resultData = await fetchData(values, signal);
+      const resultData = await api.generate(values, signal);
       setResult(resultData);
       setTextareaValue(resultData.join(", "));
     };

@@ -1,5 +1,4 @@
 using System.Text.Json.Serialization;
-using Coursework.Core;
 using Coursework.TaskGenerator;
 using Coursework.WebApi;
 using Microsoft.Extensions.FileProviders;
@@ -14,7 +13,6 @@ builder.Services.AddCors();
 
 var app = builder.Build();
 
-var generateApi = app.MapGroup("/generate");
 
 app.UseStaticFiles(new StaticFileOptions
 {
@@ -22,10 +20,14 @@ app.UseStaticFiles(new StaticFileOptions
         Path.Combine(builder.Environment.ContentRootPath, "static")),
 });
 
+var generateApi = app.MapGroup("/api/generate");
+
 generateApi.MapGet("/", Generator.GenerateWeights);
 
 app.UseGreedyEndpoints().UseGeneticEndpoints();
+app.UseMiddleware<SpaMiddleware>("./static/index.html");
 app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+
 
 app.Run();
 

@@ -14,7 +14,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <None Update="static\NewFile1.txt">
+      <None Update="static\index.html">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </None>
     </ItemGroup>

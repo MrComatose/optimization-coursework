@@ -5,36 +5,26 @@ namespace Coursework.Core;
 
 public class GeneticWeightSelector : IMaxWeightSelector
 {
-    private readonly Options? _options;
+    private readonly Options _options;
 
-    public record Options(int? PopulationSize, int? EvaluationCount, double? MutationProbability);
+    public record Options(int PopulationSize, int EvaluationCount, double MutationProbability, int MutationCount);
 
     public GeneticWeightSelector(Options? options = null)
     {
-        _options = options;
+        _options = options ?? new Options(10, 300, 1, 30);
     }
 
-    [SuppressMessage("ReSharper.DPA", "DPA0001: Memory allocation issues")]
     public async Task<(IEnumerable<int> Indexes, decimal Sum)> SelectMax(IEnumerable<int> weights, int chunkGap = 3)
     {
         var weightsArray = weights.ToArray();
-        var populationSize = _options?.PopulationSize ?? chunkGap * 5;
-        var evaluationCount = _options?.EvaluationCount ?? 4;
-        var mutationProbability = _options?.MutationProbability ?? 1;
 
-        var populations = Population.GetInitPopulation(populationSize, weightsArray, chunkGap);
+        var populations = Population.GetInitPopulation(_options.PopulationSize, weightsArray, chunkGap);
 
-        // complexity evaluationCount * populationSize * populationSize
-        for (int i = 0; i < evaluationCount; i++)
+        for (int i = 0; i < _options.EvaluationCount; i++)
         {
             var selectedPopulations = populations
-                .DistinctBy(x => x.Hash)
-                .OrderByDescending(x => x.Sum)
-                .Take(populationSize)
                 .Select((x, index) => (Population: x, Index: index))
                 .ToList();
-
-            var newPopulations = new ConcurrentBag<Population>();
 
             await Parallel.ForEachAsync(selectedPopulations, new ParallelOptions()
             {
@@ -50,29 +40,25 @@ public class GeneticWeightSelector : IMaxWeightSelector
                     var otherPopulation = selectedPopulations[otherPopulationIndex].Population;
                     var (child1, child2) = otherPopulation.Crossover(currentPopulation);
 
-                    newPopulations.Add(child1);
-                    newPopulations.Add(child2);
-                    
-                    if (child1.ShouldMutate(mutationProbability))
+                    populations.AddPopulation(child1);
+                    populations.AddPopulation(child2);
+
+                    if (child1.ShouldMutate(_options.MutationProbability))
                     {
-                        newPopulations.Add(child1.Mutate());
+                        populations.AddPopulation(child1.Mutate(_options.MutationCount));
                     }
-                    
-                    if (child2.ShouldMutate(mutationProbability))
+
+                    if (child2.ShouldMutate(_options.MutationProbability))
                     {
-                        newPopulations.Add(child2.Mutate());
+                        populations.AddPopulation(child2.Mutate(_options.MutationCount));
                     }
                 }
 
-                newPopulations.Add(currentPopulation);
-                    
                 return ValueTask.CompletedTask;
             });
-
-            populations = newPopulations.ToList();
         }
 
-        var maxPopulation = populations.MaxBy(x => x.Sum);
+        var maxPopulation = populations.Best;
 
         if (maxPopulation is null)
         {
