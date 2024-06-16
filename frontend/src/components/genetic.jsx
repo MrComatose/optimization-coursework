@@ -24,7 +24,7 @@ export const GeneticParams = ({ options, setOptions }) => {
           name="populationSize"
           value={options.populationSize}
           onChange={handleOptionsInputChange}
-          style={{ margin: "10px" }}
+          style={{ marginBottom: "10px" }}
         />
       </div>
       <div>
@@ -33,7 +33,7 @@ export const GeneticParams = ({ options, setOptions }) => {
           name="evaluationCount"
           value={options.evaluationCount}
           onChange={handleOptionsInputChange}
-          style={{ margin: "10px" }}
+          style={{ marginBottom: "10px" }}
         />
       </div>
       <div>
@@ -42,7 +42,7 @@ export const GeneticParams = ({ options, setOptions }) => {
           name="mutationProbability"
           value={options.mutationProbability}
           onChange={handleOptionsInputChange}
-          style={{ margin: "10px" }}
+          style={{ marginBottom: "10px" }}
         />
       </div>
       <div>
@@ -51,7 +51,7 @@ export const GeneticParams = ({ options, setOptions }) => {
           name="mutationCount"
           value={options.mutationCount}
           onChange={handleOptionsInputChange}
-          style={{ margin: "10px" }}
+          style={{ marginBottom: "10px" }}
         />
       </div>
       <br />

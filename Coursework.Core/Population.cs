@@ -19,13 +19,13 @@ public class Population : IEnumerable<PopulationMember>
     public Population(int populationSize, IEnumerable<PopulationMember> data)
     {
         _populationSize = populationSize;
-        AddPopulations(data);
+        AddMembers(data);
     }
 
 
     public static Population GetInitPopulation(int populationSize, int[] weightsArray, int chunkGap)
     {
-        var populations = Enumerable.Range(0, populationSize - chunkGap)
+        var populations = Enumerable.Range(0, populationSize)
             .Select(_ => PopulationMember.RandomGen(weightsArray, chunkGap))
             .ToList();
 
@@ -39,13 +39,13 @@ public class Population : IEnumerable<PopulationMember>
         return new Population(populationSize, populations);
     }
 
-    private static object locker = new
+    private static readonly object Locker = new
     {
     };
 
-    public void AddPopulation(PopulationMember population)
+    public void AddMember(PopulationMember population)
     {
-        lock (locker)
+        lock (Locker)
         {
             if (_distinctPopulations.Contains(population))
             {
@@ -69,11 +69,11 @@ public class Population : IEnumerable<PopulationMember>
 
     public PopulationMember? Best => _sortedSet.Max;
 
-    public void AddPopulations(IEnumerable<PopulationMember> populations)
+    public void AddMembers(IEnumerable<PopulationMember> populations)
     {
         foreach (var population in populations)
         {
-            AddPopulation(population);
+            AddMember(population);
         }
     }
 

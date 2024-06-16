@@ -20,10 +20,11 @@ public abstract class MaxWeightSelectorTests
 
     public class GeneticTests : MaxWeightSelectorTests
     {
-        public GeneticTests() : base(new GeneticWeightSelector())
+        public GeneticTests() : base(new GeneticWeightSelector(new GeneticWeightSelector.Options(1,1,1, 1)))
         {
         }
     }
+    
 
     public static IEnumerable<object[]> GeneratedTestData()
     {

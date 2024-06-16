@@ -18,39 +18,39 @@ public class GeneticWeightSelector : IMaxWeightSelector
     {
         var weightsArray = weights.ToArray();
 
-        var populations = Population.GetInitPopulation(_options.PopulationSize, weightsArray, chunkGap);
+        var population = Population.GetInitPopulation(_options.PopulationSize, weightsArray, chunkGap);
 
         for (int i = 0; i < _options.EvaluationCount; i++)
         {
-            var selectedPopulations = populations
+            var selectedMembers = population
                 .Select((x, index) => (Population: x, Index: index))
                 .ToList();
 
-            await Parallel.ForEachAsync(selectedPopulations, new ParallelOptions()
+            await Parallel.ForEachAsync(selectedMembers, new ParallelOptions()
             {
                 MaxDegreeOfParallelism = 6
             }, (el, token) =>
             {
-                var currentPopulation = el.Population;
+                var currentMember = el.Population;
 
-                for (int otherPopulationIndex = el.Index + 1;
-                     otherPopulationIndex < selectedPopulations.Count;
-                     otherPopulationIndex++)
+                for (int otherMemberIndex = el.Index + 1;
+                     otherMemberIndex < selectedMembers.Count;
+                     otherMemberIndex++)
                 {
-                    var otherPopulation = selectedPopulations[otherPopulationIndex].Population;
-                    var (child1, child2) = otherPopulation.Crossover(currentPopulation);
+                    var otherMember = selectedMembers[otherMemberIndex].Population;
+                    var (child1, child2) = otherMember.Crossover(currentMember);
 
-                    populations.AddPopulation(child1);
-                    populations.AddPopulation(child2);
+                    population.AddMember(child1);
+                    population.AddMember(child2);
 
                     if (child1.ShouldMutate(_options.MutationProbability))
                     {
-                        populations.AddPopulation(child1.Mutate(_options.MutationCount));
+                        population.AddMember(child1.Mutate(_options.MutationCount));
                     }
 
                     if (child2.ShouldMutate(_options.MutationProbability))
                     {
-                        populations.AddPopulation(child2.Mutate(_options.MutationCount));
+                        population.AddMember(child2.Mutate(_options.MutationCount));
                     }
                 }
 
@@ -58,7 +58,7 @@ public class GeneticWeightSelector : IMaxWeightSelector
             });
         }
 
-        var maxPopulation = populations.Best;
+        var maxPopulation = population.Best;
 
         if (maxPopulation is null)
         {

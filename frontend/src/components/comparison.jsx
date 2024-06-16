@@ -1,6 +1,6 @@
 import { Guid } from "js-guid";
 import React, { useCallback, useMemo, useState } from "react";
-import { Button, Container, Header, Segment, Statistic } from "semantic-ui-react";
+import { Button, Container, Header, Segment, Statistic, Input, Dimmer, Loader } from "semantic-ui-react";
 import api from "../api";
 import { GeneticParams } from "./genetic";
 import { SimpleDuoLineChart, SimpleLineChart } from "./linechart";
@@ -13,7 +13,9 @@ function getRandomInt(min, max) {
 }
 
 export const Comparison = () => {
-  const [tasks, setTasks] = useState([[]]);
+  const [taskCount, setTaskCount] = useState(100);
+  const [taskStep, setTaskStep] = useState(10);
+  const [tasks, setTasks] = useState([]);
   const [options, setOptions] = useState({
     populationSize: 10,
     evaluationCount: 300,
@@ -22,33 +24,33 @@ export const Comparison = () => {
   });
   const [greedyResults, setGreedyResults] = useState([]);
   const [geneticResults, setGeneticResults] = useState([]);
+  const [tasksLoading, setTasksLoading] = useState(false);
 
-  const updateTasks = useCallback((task) => setTasks((old) => [...old, task]), []);
+  const generateTasks = useCallback(async (count, step) => {
+    setTasks([]);
+    setTasksLoading(true);
+    const newTasks = [];
+    for (let i = 1; i < count + 1; i++) {
+      const average = getRandomInt(200, 200 * i * 3);
+      const params = {
+        n: step * i,
+        maxDiff: getRandomInt(0, average) / 2,
+        averageValue: average,
+        permutationCount: getRandomInt(0, 2* i * step),
+      };
+      const weights = await api.generate(params);
 
-  const generateTasks = useCallback(
-    async (count) => {
-      setTasks([]);
-      for (let i = 10; i < count + 10; i++) {
-        const average = getRandomInt(200, 200 * i * 3);
-        const params = {
-          n: 10 * i,
-          maxDiff: getRandomInt(0, average),
-          averageValue: average,
-          permutationCount: getRandomInt(0, 30 * i),
-        };
-        const weights = await api.generate(params);
+      const task = {
+        id: Guid.newGuid(),
+        weights,
+        ...params,
+      };
 
-        const task = {
-          id: Guid.newGuid(),
-          weights,
-          ...params,
-        };
-
-        updateTasks(task);
-      }
-    },
-    [updateTasks]
-  );
+      newTasks.push(task);
+    }
+    setTasks(newTasks);
+    setTasksLoading(false);
+  }, []);
 
   useDebouncedEffect(
     () => {
@@ -137,13 +139,37 @@ export const Comparison = () => {
   return (
     <Container>
       <Segment>
+        <Header>Генерація задач</Header>
+        <div>
+          <Input
+            label="Кількість задач ="
+            name="taskCount"
+            value={taskCount}
+            onChange={(e, { name, value }) => setTaskCount(+value)}
+            style={{ marginBottom: "10px" }}
+          />
+        </div>
+        <div>
+          <Input
+            label="Крок розмірності задачі ="
+            name="taskStep"
+            value={taskStep}
+            onChange={(e, { name, value }) => setTaskStep(+value)}
+            style={{ marginBottom: "10px" }}
+          />
+        </div>
+        <Button onClick={() => generateTasks(taskCount, taskStep)}>Згенерувати задачі</Button>
+      </Segment>
+      <Segment>
         <Header>Параметри генетичного алгоритму</Header>
         <GeneticParams options={options} setOptions={setOptions} />
       </Segment>
-
       <Segment>
-        <Button onClick={() => generateTasks(1000)}>Згенерувати нові 1000 задач</Button>
-
+        {tasksLoading && (
+          <Dimmer active inverted>
+            <Loader inverted>Loading</Loader>
+          </Dimmer>
+        )}
         <Header>Порівняння результатів алгоритмів</Header>
         <SimpleDuoLineChart
           greedyData={greedyResults}
@@ -161,6 +187,11 @@ export const Comparison = () => {
         <Statistic label="жадібний алгорітм швидший разів" value={resultComparison.greedyTimeWinCount} />
       </Segment>
       <Segment>
+        {tasksLoading && (
+          <Dimmer active inverted>
+            <Loader inverted>Loading</Loader>
+          </Dimmer>
+        )}
         <Header>Час жадібного алгоритму</Header>
         <SimpleLineChart
           points={greedyResults}

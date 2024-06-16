@@ -1,0 +1,44 @@
+Вхід:
+weights - список ваг об'єктів
+chunkGap - розмір кроку
+_options - параметри конфігурації (PopulationSize, EvaluationCount, MutationProbability, MutationCount)
+
+Вихід:
+Indexes - список індексів обраних речей
+Sum - значення цільової функції
+
+Ініціалізація:
+weightsArray = перетворити weights у масив
+populations = Population.GetInitPopulation(_options.PopulationSize, weightsArray, chunkGap)
+
+for i від 0 до _options.EvaluationCount - 1:
+    selectedPopulations = вибірка популяції
+
+    for el у selectedPopulations:
+        currentPopulation = el.Population
+
+            for otherPopulationIndex від el.Index + 1 до довжини selectedPopulations - 1:
+                otherPopulation = selectedPopulations[otherPopulationIndex].Population
+                (child1, child2) = otherPopulation.Crossover(currentPopulation)
+
+                populations.AddPopulation(child1)
+                populations.AddPopulation(child2)
+
+                if child1.ShouldMutate(_options.MutationProbability):
+                    populations.AddPopulation(child1.Mutate(_options.MutationCount))
+                endif
+
+                if child2.ShouldMutate(_options.MutationProbability):
+                    populations.AddPopulation(child2.Mutate(_options.MutationCount))
+                endif
+            endfor
+    endfor
+endfor
+
+maxPopulation = populations.Best
+
+if maxPopulation є null:
+    return (порожній масив, -1)
+endif
+
+return (maxPopulation.Indexes, maxPopulation.Sum)

@@ -6,7 +6,7 @@
       "dotnetRunMessages": true,
       "launchBrowser": false,
       "launchUrl": "generate?n=1000&maxDiff=120&averageValue=66&permutationCount=1200",
-      "applicationUrl": "http://localhost:5245",
+      "applicationUrl": "http://localhost:5000",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
